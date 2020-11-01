@@ -39,6 +39,7 @@ ALL ALL=NOPASSWD: /bin/systemctl restart openvpn@$vpn_name.service
 
 echo "generating removal script delete.sh for future cleanup"
 echo """
+#!/bin/bash
 rm ~/.local/share/applications/$vpn_name.desktop
 rm ~/.config/autostart/$vpn_name.desktop
 rm /etc/openvpn/"$vpn_name".conf
