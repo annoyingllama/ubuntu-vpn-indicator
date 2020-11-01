@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=simplaex
-Comment=Control VPN
-Exec=/home/abhi/Projects/vpn_indicator/vpn_indicator.py openvpn@simplaex.service
-Type=Application
-Terminal=True
-Icon=/home/abhi/Projects/vpn_indicator/icons/ovpn.png
