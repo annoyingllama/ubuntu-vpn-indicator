@@ -29,7 +29,7 @@ else
 fi
 
 echo """
-append these lines to you /etc/sudoers  file
+append these lines to your /etc/sudoers  file
 <------------------------------------------------------------------>
 ALL ALL=NOPASSWD: /bin/systemctl start openvpn@$vpn_name.service
 ALL ALL=NOPASSWD: /bin/systemctl stop openvpn@$vpn_name.service
@@ -38,9 +38,19 @@ ALL ALL=NOPASSWD: /bin/systemctl restart openvpn@$vpn_name.service
 """
 
 echo "generating removal script delete.sh for future cleanup"
-echo """
-#!/bin/bash
+echo """#!/bin/bash
 rm ~/.local/share/applications/$vpn_name.desktop
 rm ~/.config/autostart/$vpn_name.desktop
-rm /etc/openvpn/"$vpn_name".conf
-""" >> delete.sh
+rm /etc/openvpn/$vpn_name.conf
+
+echo :'
+remove these lines from your /etc/sudoers  file if you added them
+<------------------------------------------------------------------>
+ALL ALL=NOPASSWD: /bin/systemctl start openvpn@$vpn_name.service
+ALL ALL=NOPASSWD: /bin/systemctl stop openvpn@$vpn_name.service
+ALL ALL=NOPASSWD: /bin/systemctl restart openvpn@$vpn_name.service
+<------------------------------------------------------------------>
+'
+""" >> uninstall.sh
+
+chmod +x uninstall.sh
