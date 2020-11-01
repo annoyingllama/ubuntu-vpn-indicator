@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=<VPN>
+Comment=Control VPN
+Exec=<PROJECT_DIR>/vpn_indicator.py openvpn@<VPN>.service
+Type=Application
+Terminal=True
+Icon=<PROJECT_DIR>/icons/ovpn.png
