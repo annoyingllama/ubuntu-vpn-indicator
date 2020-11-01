@@ -13,15 +13,18 @@ else
 fi
 
 FILE2=~/.local/share/applications/"$vpn_name".desktop
-echo "creating $FILE2"
+FILE3=~/.config/autostart/"$vpn_name".desktop
+
+echo "creating $FILE2 and $FILE3"
 project_dir=$(pwd)
 
-if [[ -f "$FILE2" ]];
+if [[ -f "$FILE3" ]];
 then
-  echo "$FILE2 already exists"
+  echo "$FILE3 already exists"
 else
   sed -e "s+<PROJECT_DIR>+$project_dir+g"  -e "s+<VPN>+$vpn_name+g" vpn.desktop.template > "$vpn_name".desktop
   cp "$project_dir"/"$vpn_name".desktop ~/.local/share/applications/
+  cp "$project_dir"/"$vpn_name".desktop ~/.config/autostart/
   rm "$project_dir"/"$vpn_name".desktop
 fi
 
