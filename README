@@ -14,5 +14,5 @@ Instructions:
 
 This script
 1. creates an entry in /etc/openvpn for yourvpn, so you can control the vpn with systemctl
-2. create a .desktop entry and places it in .local/share/applications and .config/autostart/ 
+2. create a .desktop entry and places it in .local/share/applications and .config/autostart/
 3. then yourvpn is available via your applications and autostart as a startup application
