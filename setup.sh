@@ -3,6 +3,9 @@
 read -r -p "Enter path to your vpn config file:" config_path
 read -r -p "Give this vpn a name:" vpn_name
 
+sudo apt-get install gir1.2-appindicator3-0.1
+sudo /usr/bin/python3 -m pip install psutil
+
 FILE1=/etc/openvpn/"$vpn_name".conf
 echo "creating $FILE1"
 if [[ -f "$FILE1" ]];
