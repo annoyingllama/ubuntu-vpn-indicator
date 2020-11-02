@@ -6,6 +6,7 @@ import time
 from pathlib import Path
 
 import gi
+import psutil
 
 gi.require_version('AppIndicator3', '0.1')
 
@@ -72,18 +73,26 @@ def build_menu():
     return menu
 
 
-if __name__ == "__main__":
-    indicator_id = sys.argv[1]
-    project_path = Path(__file__).parent
-    init_state = check_state()
-    if init_state == "active":
-        init_icon_path = os.path.join(project_path, "icons/vpnon.png")
-    else:
-        init_icon_path = os.path.join(project_path, "icons/vpnoff.png")
+def is_already_running():
+    return len([ps for ps in psutil.process_iter() if ps.name().startswith("vpn_indicator")]) >= 1
 
-    indicator = AppIndicator3.Indicator.new(id=indicator_id,
-                                            icon_name=init_icon_path,
-                                            category=AppIndicator3.IndicatorCategory.SYSTEM_SERVICES)
-    indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
-    indicator.set_menu(build_menu())
-    Gtk.main()
+
+if __name__ == "__main__":
+    if is_already_running():
+        subprocess.Popen(["notify-send", "an instance of vpn indicator is already running"])
+        sys.exit()
+    else:
+        indicator_id = sys.argv[1]
+        project_path = Path(__file__).parent
+        init_state = check_state()
+        if init_state == "active":
+            init_icon_path = os.path.join(project_path, "icons/vpnon.png")
+        else:
+            init_icon_path = os.path.join(project_path, "icons/vpnoff.png")
+
+        indicator = AppIndicator3.Indicator.new(id=indicator_id,
+                                                icon_name=init_icon_path,
+                                                category=AppIndicator3.IndicatorCategory.SYSTEM_SERVICES)
+        indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
+        indicator.set_menu(build_menu())
+        Gtk.main()
