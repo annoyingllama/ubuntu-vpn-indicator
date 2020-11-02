@@ -6,6 +6,7 @@ import time
 from pathlib import Path
 
 import gi
+import psutil
 
 gi.require_version('AppIndicator3', '0.1')
 
@@ -79,8 +80,11 @@ if __name__ == "__main__":
     pid = str(os.getpid())
     pid_file = f"{project_path}/process.pid"
     if os.path.isfile(pid_file):
-        subprocess.Popen(["notify-send", "vpn indicator is already running"])
-        sys.exit()
+        with open(pid_file, 'r') as f:
+            old_pid = f.read()
+        if psutil.pid_exists(int(old_pid)):
+            subprocess.Popen(["notify-send", "vpn indicator is already running"])
+            sys.exit()
 
     with open(pid_file, 'w') as f:
         f.write(pid)
