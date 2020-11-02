@@ -1,6 +1,6 @@
 An openvpn status indicator icon for ubuntu with drop down control menu.
 It monitors and controls the state of openvpn@yourvpn.service
-![Alt text](https://gitlab.com/de.annoying.llama/ubuntu-vpn-indicator/-/blob/master/Screenshot.png?raw=true "Active=Green Icon, Inactive=Red Icon")
+![alt text](https://gitlab.com/de.annoying.llama/ubuntu-vpn-indicator/-/blob/master/Screenshot.png "Active=Green Icon, Inactive=Red Icon")
 This project creates a gtk app indicator and a desktop entry to start it.
 You can also add the python script to your start up applications
 
