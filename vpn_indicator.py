@@ -1,7 +1,9 @@
 #!/usr/bin/python3
+
 import os
 import subprocess
 import sys
+import threading
 import time
 from pathlib import Path
 
@@ -27,11 +29,41 @@ def update_state(action):
     subprocess.call(['sudo', 'systemctl', f'{action}', f'{indicator_id}'])
 
 
+def get_icon_path(state=None):
+    if state is None:
+        state = check_state()
+
+    if state == "active":
+        icon_path = os.path.join(project_path, "icons/vpnon.png")
+    else:
+        icon_path = os.path.join(project_path, "icons/vpnoff.png")
+    return icon_path
+
+
+class StateTracker(threading.Thread):
+    def __init__(self, init_state):
+        super().__init__()
+        self.known_state = init_state
+        self.exit = False
+
+    def run(self):
+        while self.exit is False:
+            state = check_state()
+            if state != self.known_state:
+                icon_path = get_icon_path(state)
+                indicator.set_icon(icon_path)
+                report_state()
+                self.known_state = state
+            time.sleep(5)
+        return
+
+
 def up(*args):
     state = check_state()
     if state == "inactive":
         update_state("start")
-        indicator.set_icon(os.path.join(project_path, "icons/vpnon.png"))
+        indicator.set_icon(get_icon_path("active"))
+        worker.known_state = "active"
     time.sleep(2)
     report_state()
     return
@@ -41,7 +73,8 @@ def down(*args):
     state = check_state()
     if state == "active":
         update_state("stop")
-        indicator.set_icon(os.path.join(project_path, "icons/vpnoff.png"))
+        indicator.set_icon(get_icon_path("inactive"))
+        worker.known_state = "inactive"
     time.sleep(2)
     report_state()
     return
@@ -90,12 +123,10 @@ if __name__ == "__main__":
         f.write(pid)
 
     try:
-        init_state = check_state()
-        if init_state == "active":
-            init_icon_path = os.path.join(project_path, "icons/vpnon.png")
-        else:
-            init_icon_path = os.path.join(project_path, "icons/vpnoff.png")
+        worker = StateTracker(init_state=check_state())
+        worker.start()
 
+        init_icon_path = get_icon_path()
         indicator = AppIndicator3.Indicator.new(id=indicator_id,
                                                 icon_name=init_icon_path,
                                                 category=AppIndicator3.IndicatorCategory.SYSTEM_SERVICES)
@@ -103,4 +134,6 @@ if __name__ == "__main__":
         indicator.set_menu(build_menu())
         Gtk.main()
     finally:
+        worker.exit = True
+        worker.join()
         os.unlink(pid_file)
