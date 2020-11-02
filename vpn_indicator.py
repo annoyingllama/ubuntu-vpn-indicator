@@ -14,7 +14,7 @@ from gi.repository import AppIndicator3, Gtk
 
 def check_state():
     cmd = f"systemctl is-active {indicator_id}"
-    return subprocess.run([cmd], capture_output=True, shell=True).stdout.decode().strip()
+    return subprocess.run([cmd], stdout=subprocess.PIPE, shell=True).stdout.decode().strip()
 
 
 def report_state():
